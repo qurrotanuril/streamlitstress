@@ -150,7 +150,7 @@ if submit:
     # ==========================
     # Radar Chart
     # ==========================
-    st.subheader("🕸 Radar Chart Perbandingan")
+    st.subheader("Radar Chart Perbandingan")
 
     cluster_means = df.groupby("Label")[features].mean()
     compare = cluster_means.loc[pred].values.tolist()
