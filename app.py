@@ -7,9 +7,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from math import pi
 
-# =======================================================
-# 1. LOAD DATASET
-# =======================================================
+# LOAD DATASET
 st.set_page_config(page_title="SPK Klasifikasi Tingkat Stres", layout="wide")
 st.title("Sistem Pendukung Keputusan – Klasifikasi Tingkat Stres Mahasiswa")
 
@@ -24,7 +22,7 @@ except:
 # dataset 1 kolom → split dengan ;
 df = df_raw[0].str.split(";", expand=True)
 
-# baris pertama = header
+# header
 df.columns = df.iloc[0]
 df = df.drop(index=0).reset_index(drop=True)
 
@@ -36,9 +34,7 @@ for c in df.columns:
 target_col = df.columns[-1]
 features = df.columns[:-1]
 
-# =======================================================
-# 2. Buat Label Klasifikasi
-# =======================================================
+# Buat Label Klasifikasi
 def map_label(v):
     if v <= 2:
         return 0   # stres rendah
@@ -55,9 +51,7 @@ label_map = {
     2: ("Stres Tinggi", "Risiko burnout tinggi, keluhan intens, perlu perhatian lebih.", "red")
 }
 
-# =======================================================
-# 3. Scaling + Model Training
-# =======================================================
+# Scaling + Model Training
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(df[features])
 y = df["Label"]
@@ -67,9 +61,7 @@ model.fit(X_scaled, y)
 
 st.success("✔ Model klasifikasi (Random Forest) berhasil dilatih!")
 
-# =======================================================
-# 4. PCA Visualisasi
-# =======================================================
+# PCA Visualisasi
 st.header("Visualisasi PCA (Dataset)")
 
 pca = PCA(n_components=2)
@@ -82,12 +74,10 @@ plt.xlabel("Komponen Utama 1")
 plt.ylabel("Komponen Utama 2")
 st.pyplot(fig1)
 
-# =======================================================
-# 5. FORM PREDIKSI MANUAL (Bahasa Indonesia)
-# =======================================================
+# FORM PREDIKSI MANUAL 
 st.header("Prediksi Manual (Skala 1–5)")
 
-# Mapping nama asli kolom → nama tampilan Indonesia
+# Mapping nama asli kolom 
 feature_labels = {
     "Kindly Rate your Sleep Quality": "Kualitas Tidur",
     "How many times a week do you suffer headaches": "Frekuensi Sakit Kepala per Minggu",
@@ -117,15 +107,11 @@ if submit:
 
     label, desc, color = label_map[pred]
 
-    # ==========================
     # OUTPUT PREDIKSI
-    # ==========================
     st.success(f"Hasil Prediksi Tingkat Stres: *{label}*")
     st.write(f"*Kondisi:* {desc}")
 
-    # ==========================
     # GAUGE PREDIKSI
-    # ==========================
     st.subheader("Indikator Tingkat Stres")
 
     fig2, ax2 = plt.subplots(figsize=(4,2))
@@ -135,9 +121,7 @@ if submit:
     ax2.set_title(f"Tingkat Stres: {label}")
     st.pyplot(fig2)
 
-    # ==========================
     # PCA POSISI INPUT
-    # ==========================
     st.subheader("Posisi Input di PCA Plot")
 
     fig3, ax3 = plt.subplots()
@@ -147,9 +131,7 @@ if submit:
     ax3.set_title("Posisi Input pada PCA")
     st.pyplot(fig3)
 
-    # ==========================
     # Radar Chart
-    # ==========================
     st.subheader("Radar Chart Perbandingan")
 
     cluster_means = df.groupby("Label")[features].mean()
@@ -172,9 +154,7 @@ if submit:
     plt.legend()
     st.pyplot(fig4)
 
-    # =======================================================
     # PENJELASAN KENAPA DAPAT LABEL
-    # =======================================================
     st.header("Penjelasan Hasil Prediksi")
     explanation = []
 
@@ -196,9 +176,7 @@ if submit:
     else:
         st.write("Nilai kamu seimbang, tidak ada indikator berat yang dominan.")
 
-    # =======================================================
     # TABEL INTERPRETASI LABEL
-    # =======================================================
     st.subheader("Tabel Arti Tingkat Stres")
 
     label_table = pd.DataFrame({
